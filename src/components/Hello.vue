@@ -6,7 +6,7 @@
     <section class='box'>
       <header class='boxTop'>
         <div class='add btn' @click='addActive=true'>+ add</div>
-        <input type="text" class='search' placeholder="search">
+        <input type="text" class='search' placeholder="search" v-model='search'>
       </header>
       <table>
         <thead>
@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for='item in list' :key='item'>
+          <tr v-for='(item,index) in list' :key='item'>
             <td class='name'>{{item.name}}</td>
             <td class='year'>{{item.year}}</td>
             <td class='grape'>{{item.grape}}</td>
@@ -28,16 +28,19 @@
             </td>
             <td>
               <div class='action'>
-                 <span>查看</span>
-                 <span>编辑</span>
-                 <span>删除</span>
+                 <span @click='handleInfo(item)'>查看</span>
+                 <span @click='handleEdit(item,index)'>编辑</span>
+                 <span @click='handleDel(item,index)'>删除</span>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
     </section>
-    <AlertBox v-if='addActive' @add='handleAdd' @cancle='addActive=false'></AlertBox>
+    <AlertBox v-if='addActive' @add='handleAdd' @cancle='addActive=false' title='Add new item' type='add'></AlertBox>
+    <AlertBox v-if='InfoActive'  @cancle='InfoActive=false' title='Item info' type='info' :info='info'></AlertBox>
+    <AlertBox v-if='EditActive' @add='edit' @cancle='EditActive=false' title='Edit item' type='edit' :info='info'></AlertBox>
+    <AlertBox v-if='DeleteActive' @del='del' @cancle='DeleteActive=false' title='Confirm deletion' type='del' :info='info'></AlertBox>
   </div>
 </template>
 
@@ -48,9 +51,26 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       addActive: false,
-      list: []
+      InfoActive: false,
+      EditActive: false,
+      DeleteActive: false,
+      info: {},
+      list: [],
+      index: '',
+      search: ''
+    }
+  },
+  computed: {
+    Searchlist () {
+      const arr = []
+      const vm = this
+      this.list.forEach(function (item) {
+        if (vm.search === item.name && vm.search !== '') {
+          arr.push(item)
+        }
+      })
+      return arr
     }
   },
   components: {
@@ -61,6 +81,28 @@ export default {
     handleAdd (val) {
       this.list.push(val)
       this.addActive = false
+    },
+    handleInfo (item) {
+      this.info = item
+      this.InfoActive = true
+    },
+    handleEdit (item, index) {
+      this.info = item
+      this.index = index
+      this.EditActive = true
+    },
+    handleDel (item, index) {
+      this.index = index
+      this.info = item
+      this.DeleteActive = true
+    },
+    edit (val) {
+      this.list[this.index] = val
+      this.EditActive = false
+    },
+    del () {
+      this.DeleteActive = false
+      this.List.splice(this.index, 1)
     }
   }
 }

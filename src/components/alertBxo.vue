@@ -2,9 +2,9 @@
   <div class='alertBox' ref='box'>
        <section class='boxInner'>
           <header class='header'>
-            Add new item
+            {{title}}
           </header>
-          <section class='center'>
+          <section class='center' v-if='type=="add"||type=="edit"'>
              <form>
                 <div>
                    <label for="">Name</label>
@@ -22,7 +22,7 @@
                 </div>
                 <div>
                    <label for="">Rating</label>
-                   <Star :score='add.rating' @starLevel='getLevel'></Star>
+                   <Star :score='rating' @starLevel='getLevel'></Star>
                 </div>
                 <div>
                    <label for="">Commits</label>
@@ -30,9 +30,44 @@
                 </div>
              </form>
           </section>
-          <footer class='footer'>
+          <section v-else-if="type=='info'" class='center'>
+             <form>
+                <div>
+                   <label for="">Name</label>
+                   <div class='item'>{{info.name}}</div>
+                </div>
+                <div>
+                   <label for="">Year</label>
+                    <div class='item'>{{info.year}}</div>
+                </div>
+                <div>
+                   <label for="">Grape</label>
+                    <div class='item'>{{info.grape}}</div>
+                </div>
+                <div>
+                   <label for="">Rating</label>
+                   <Star :score='info.rating'></Star>
+                </div>
+                <div>
+                   <label for="">Commits</label>
+                    <div class='item'>{{info.commit}}</div>
+                </div>
+             </form>
+          </section>
+           <section v-else-if="type=='del'" class='center'>
+              <div>Are you sure you want to delete "{{info.name}}"?</div>
+          </section>
+          <footer class='footer'  v-if='type=="add"||type=="edit"'>
              <span @click='cancle'>Cancel</span>
-             <div class='btn' @click='addEvent'>Add</div>
+             <div v-if='type=="add"' class='btn' @click='addEvent'>Add</div>
+             <div v-else-if='type=="edit"' class='btn' @click='addEvent'>Save</div>
+          </footer>
+          <footer class='footer'  v-if='type=="del"'>
+             <span @click='cancle'>Cancel</span>
+             <div class='btn' @click='delEvent'>Delete</div>
+          </footer>
+           <footer class='footer'  v-else-if='type=="info"'>
+             <div class='btn' @click='cancle'>OK</div>
           </footer>
        </section>
   </div>
@@ -53,17 +88,22 @@ export default {
         name: '',
         year: '',
         grape: '',
-        rating: 0,
+        rating: '',
         commit: ''
       }
     }
   },
   mounted () {
     this.$refs.box.style.height = document.documentElement.clientHeight + 'px'
+    if (this.type === 'edit') {
+      this.add = this.info
+    }
+    console.log(this.add.rating)
   },
   components: {
     Star
   },
+  props: ['title', 'type', 'info'],
   methods: {
     addEvent () {
       this.$emit('add', this.add)
@@ -73,6 +113,14 @@ export default {
     },
     getLevel (val) {
       this.add.rating = val
+    },
+    delEvent () {
+      this.$emit('del')
+    }
+  },
+  computed: {
+    rating () {
+      return this.add.rating
     }
   }
 }
