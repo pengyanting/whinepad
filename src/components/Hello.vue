@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for='(item,index) in list' :key='item'>
+          <tr v-for='(item,index) in Searchlist' :key='item'>
             <td class='name'>{{item.name}}</td>
             <td class='year'>{{item.year}}</td>
             <td class='grape'>{{item.grape}}</td>
@@ -66,7 +66,12 @@ export default {
   },
   computed: {
     Searchlist () {
-      return this.list[this.index]
+      const key = this.search
+      const shoppingList = this.list
+      console.log(this.list)
+      return shoppingList.filter(function (item) {
+        return item.name.toLowerCase().indexOf(key.toLowerCase()) !== -1
+      })
     }
   },
   components: {
