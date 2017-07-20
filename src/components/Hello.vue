@@ -24,7 +24,7 @@
             <td class='year'>{{item.year}}</td>
             <td class='grape'>{{item.grape}}</td>
             <td class='rating'>
-              <Star :score='item.rating'></Star>
+              <Star :score='item.rating' disabled></Star>
             </td>
             <td>
               <div class='action'>
@@ -61,16 +61,12 @@ export default {
       search: ''
     }
   },
+  mounted () {
+    this.list = localStorage.getItem('list') ? JSON.parse(localStorage.getItem('list')) : []
+  },
   computed: {
     Searchlist () {
-      const arr = []
-      const vm = this
-      this.list.forEach(function (item) {
-        if (vm.search === item.name && vm.search !== '') {
-          arr.push(item)
-        }
-      })
-      return arr
+      return this.list[this.index]
     }
   },
   components: {
@@ -81,6 +77,7 @@ export default {
     handleAdd (val) {
       this.list.push(val)
       this.addActive = false
+      localStorage.setItem('list', JSON.stringify(this.list))
     },
     handleInfo (item) {
       this.info = item
@@ -98,11 +95,14 @@ export default {
     },
     edit (val) {
       this.list[this.index] = val
+      console.log(this.list[this.index])
+      localStorage.setItem('list', JSON.stringify(this.list))
       this.EditActive = false
     },
     del () {
       this.DeleteActive = false
-      this.List.splice(this.index, 1)
+      this.list.splice(this.index, 1)
+      localStorage.setItem('list', JSON.stringify(this.list))
     }
   }
 }

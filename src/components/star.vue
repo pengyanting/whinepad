@@ -1,7 +1,7 @@
 <template>
     <div class='star'>
         <ul class='star_list'>
-            <li class='star_item' :class='{"pos":index<num}' v-for='(item,index) in 5' :key='item' @click='handleClick(index)' @mousemove='handlemove(index)' @mouseout='out(index)'></li>
+            <li class='star_item' :class='{"pos":index<getNum}' v-for='(item,index) in 5' :key='item' @click='handleClick(index)' @mousemove='handlemove(index)' @mouseout='out(index)'></li>
         </ul>
     </div>
 </template>
@@ -10,27 +10,39 @@ export default {
   name: 'satr',
   data () {
     return {
-      num: 0,
       saveNum: 0
     }
   },
   methods: {
     handleClick (index) {
-      this.num = index + 1
+      if (this.disabled === '') {
+        return
+      }
+      this.score = index + 1
       this.saveNum = index + 1
-      this.$emit('starLevel', this.num)
+      this.$emit('starLevel', this.score)
     },
     handlemove (index) {
-      this.num = index + 1
+      if (this.disabled === '') {
+        return
+      }
+      this.score = index + 1
     },
     out (index) {
-      this.num = this.saveNum
+      if (this.disabled === '') {
+        return
+      }
+      this.score = this.saveNum
     }
   },
-  props: ['score'],
+  props: ['score', 'disabled'],
   mounted () {
-    this.num = this.score
-    this.saveNum = this.num
+    this.saveNum = this.score
+  },
+  computed: {
+    getNum () {
+      return this.score
+    }
   }
 }
 </script>

@@ -22,7 +22,7 @@
                 </div>
                 <div>
                    <label for="">Rating</label>
-                   <Star :score='rating' @starLevel='getLevel'></Star>
+                   <Star :score='rating.rating' @starLevel='getLevel'></Star>
                 </div>
                 <div>
                    <label for="">Commits</label>
@@ -46,7 +46,7 @@
                 </div>
                 <div>
                    <label for="">Rating</label>
-                   <Star :score='info.rating'></Star>
+                   <Star :score='info.rating' disabled></Star>
                 </div>
                 <div>
                    <label for="">Commits</label>
@@ -98,10 +98,14 @@ export default {
     if (this.type === 'edit') {
       this.add = this.info
     }
-    console.log(this.add.rating)
   },
   components: {
     Star
+  },
+  computed: {
+    rating () {
+      return this.add
+    }
   },
   props: ['title', 'type', 'info'],
   methods: {
@@ -116,11 +120,6 @@ export default {
     },
     delEvent () {
       this.$emit('del')
-    }
-  },
-  computed: {
-    rating () {
-      return this.add.rating
     }
   }
 }
