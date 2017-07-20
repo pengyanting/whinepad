@@ -68,8 +68,8 @@ export default {
     Searchlist () {
       const key = this.search
       const shoppingList = this.list
-      console.log(this.list)
       return shoppingList.filter(function (item) {
+        // 此处fiter为javascript数组对象的一个方法，用于检测数值元素，并返回符合条件所有元素的数组
         return item.name.toLowerCase().indexOf(key.toLowerCase()) !== -1
       })
     }
